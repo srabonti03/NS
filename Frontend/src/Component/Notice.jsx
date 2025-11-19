@@ -85,7 +85,7 @@ function Notice({ notice }) {
 
     const handleShareClick = async (e) => {
         e.stopPropagation();
-        const shareUrl = `${window.location.origin}/notice/${notice.id}`;
+        const shareUrl = `${window.location.origin}/view-notice/${notice.id}`;
         try {
             const res = await axios.post(
                 `https://ns-server.onrender.com/api/share/shares/${notice.id}`,

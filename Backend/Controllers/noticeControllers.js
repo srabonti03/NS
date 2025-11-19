@@ -342,14 +342,8 @@ export const deleteNotice = async (req, res) => {
         for (const comment of comments) {
             await prisma.noticeCommentReply.deleteMany({ where: { commentId: comment.id } });
         }
-
-        // Delete related comments
         await prisma.noticeComment.deleteMany({ where: { noticeId: id } });
-
-        // Delete related notifications
         await prisma.notification.deleteMany({ where: { noticeId: id } });
-
-        // Finally, delete the notice
         await prisma.notice.delete({ where: { id } });
 
         res.json({ message: 'Notice deleted successfully' });
