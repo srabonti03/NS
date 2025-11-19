@@ -1,0 +1,158 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  student
+  teacher
+  admin
+}
+
+enum Status {
+  pending
+  accepted
+  rejected
+}
+
+model User {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  firstName    String
+  lastName     String
+  email        String    @unique
+  password     String
+  role         Role
+  avatar       String?
+  // Student-specific
+  session      String?
+  dept         String?
+  section      String?
+  regNo        String?   @unique
+  // Teacher-specific
+  status       Status?   @default(pending)
+  // Teacher and Student-specific
+  isEnabled    Boolean?  @default(false)
+  // Admin-specific
+  secretCode   String?   @default("NS-Adm!n-42Secure")
+  adminRole    String?
+  adminQuote   String?
+  adminGit     String?
+  // Shared
+  otp          String?
+  otpExpiresAt DateTime?
+  isVerified   Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+
+  // Backlink relations
+  notices Notice[] @relation("UserNotices")
+
+  // Notifications
+  notifications     Notification[] @relation("UserNotifications")
+  notificationsFrom Notification[] @relation("UserNotificationsFrom")
+
+  // Likes, comments, shares
+  noticeLikes          NoticeLike[]
+  noticeComments       NoticeComment[]
+  noticeCommentReplies NoticeCommentReply[]
+  noticeShares         NoticeShare[]
+}
+
+model Notice {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  text       String
+  image      String?
+  category   String
+  target     String // "all" | "students" | "teachers"
+  session    String?
+  department String?
+  section    String?
+  createdBy  String   @db.ObjectId
+  createdAt  DateTime @default(now())
+
+  createdByUser User @relation("UserNotices", fields: [createdBy], references: [id])
+
+  likes    NoticeLike[]
+  comments NoticeComment[]
+  shares   NoticeShare[]
+
+  notifications Notification[] @relation("NoticeNotifications")
+
+  @@index([target, session, department, section])
+}
+
+model Notification {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String   @db.ObjectId
+  type       String
+  noticeId   String?  @db.ObjectId
+  fromUserId String?  @db.ObjectId
+  text       String
+  avatar     String?
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  user     User    @relation("UserNotifications", fields: [userId], references: [id])
+  fromUser User?   @relation("UserNotificationsFrom", fields: [fromUserId], references: [id])
+  notice   Notice? @relation("NoticeNotifications", fields: [noticeId], references: [id])
+}
+
+model NoticeLike {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  noticeId  String   @db.ObjectId
+  userId    String   @db.ObjectId
+  avatar    String?
+  createdAt DateTime @default(now())
+
+  notice Notice @relation(fields: [noticeId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@unique([noticeId, userId])
+}
+
+model NoticeComment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  noticeId  String?
+  userId    String   @db.ObjectId
+  avatar    String?
+  text      String
+  createdAt DateTime @default(now())
+  createdBy String
+
+  notice Notice? @relation(fields: [noticeId], references: [id])
+  user   User    @relation(fields: [userId], references: [id])
+
+  replies NoticeCommentReply[]
+}
+
+model NoticeCommentReply {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  commentId     String?
+  parentReplyId String?  @db.ObjectId
+  userId        String   @db.ObjectId
+  avatar        String?
+  text          String
+  createdAt     DateTime @default(now())
+
+  comment NoticeComment? @relation(fields: [commentId], references: [id])
+  user    User           @relation(fields: [userId], references: [id])
+
+  parentReply  NoticeCommentReply?  @relation("ReplyToReply", fields: [parentReplyId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  childReplies NoticeCommentReply[] @relation("ReplyToReply")
+}
+
+model NoticeShare {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  noticeId  String   @db.ObjectId
+  userId    String   @db.ObjectId
+  avatar    String?
+  createdAt DateTime @default(now())
+
+  notice Notice @relation(fields: [noticeId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@unique([noticeId, userId])
+}

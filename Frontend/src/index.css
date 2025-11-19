@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global theme variables */
+:root {
+  --bg-color: #f1f8f3;
+  --card-bg: #e0ece0;
+  --card-hover-bg: #bbd7bb;
+  --btn-bg: #89db9c;
+  --btn-hover-bg: #60d27b;
+  --accent-color: #34a853;
+  --text-main: #202124;
+  --text-subtle: #5f6368;
+  --text-faint: #80868b;
+  --text-error: #d93025;
+  --border-main: #969798;
+  --border-subtle: #949596;
+  --font-heading: "Roboto", sans-serif;
+  --font-body: "Roboto", sans-serif;
+  --shadow-default: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 4px 6px rgba(0, 0, 0, 0.15);
+  --transition-regular: 0.3s;
+  --transition-slower: 0.5s;
+
+  /* Light/Dark theme overrides */
+  --light-bg-color: #f4fff7;
+  --light-card-bg: #e0ece0;
+  --light-card-hover-bg: #bbd7bb;
+  --light-btn-bg: #89db9c;
+  --light-btn-hover-bg: #60d27b;
+  --light-accent-color: #34a853;
+  --light-text-main: #202124;
+  --light-text-subtle: #5f6368;
+  --light-text-faint: #80868b;
+  --light-text-error: #d93025;
+  --light-shadow-default: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --light-shadow-hover: 0 4px 6px rgba(0, 0, 0, 0.15);
+  --light-border-main: #969798;
+  --light-border-subtle: #949596;
+  --light-layout-bg: #d9e3d6;
+
+  --dark-bg-color: #1c1e1c;
+  --dark-card-bg: #222422;
+  --dark-card-hover-bg: #171a17;
+  --dark-btn-bg: #34a853;
+  --dark-btn-hover-bg: #2c8c46;
+  --dark-accent-color: #2a9446;
+  --dark-text-main: #e8eaed;
+  --dark-text-subtle: #bdc1c6;
+  --dark-text-faint: #9aa0a6;
+  --dark-text-error: #df6156;
+  --dark-shadow-default: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --dark-shadow-hover: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --dark-border-main: #5f6368;
+  --dark-border-subtle: #3c4043;
+  --dark-layout-bg: #1b1f1b;
+}
