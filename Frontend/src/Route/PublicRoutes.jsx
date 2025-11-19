@@ -3,9 +3,9 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
 
 const PublicRoutes = ({ children }) => {
-    const { user, loading } = useAuth();
+    const { user, initialLoading } = useAuth();
 
-    if (loading) return null;
+    if (initialLoading) return null;
 
     if (user) return <Navigate to="/" replace />;
 
