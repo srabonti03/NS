@@ -1,10 +1,12 @@
+// server.js
 import dotenv from "dotenv";
-
 dotenv.config({ override: true });
 
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+
+// Import your routes
 import authRoutes from './Routes/authRoutes.js';
 import userRoutes from './Routes/userRoutes.js';
 import adminRoutes from "./Routes/adminRoutes.js";
@@ -19,13 +21,23 @@ import emailRoutes from "./Routes/emailRoutes.js";
 
 const app = express();
 
+app.set('trust proxy', 1);
+
+if (process.env.NODE_ENV === "production") {
+    app.use((req, res, next) => {
+        if (req.header("x-forwarded-proto") !== "https") {
+            return res.redirect(`https://${req.header("host")}${req.url}`);
+        }
+        next();
+    });
+}
+
 app.use(cors({
     origin: process.env.FRONTEND_URL,
     credentials: true
 }));
 
 app.use(cookieParser());
-
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
