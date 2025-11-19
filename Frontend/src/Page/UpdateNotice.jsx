@@ -28,7 +28,7 @@ function UpdateNotice() {
     useEffect(() => {
         const fetchOptions = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/notice/options', {
+                const res = await axios.get('https://ns-server.onrender.com/api/notice/options', {
                     withCredentials: true,
                 });
                 setSessionOptions(res.data.sessions || []);
@@ -46,7 +46,7 @@ function UpdateNotice() {
     useEffect(() => {
         const fetchNotice = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/api/notice/${id}`, {
+                const res = await axios.get(`https://ns-server.onrender.com/api/notice/${id}`, {
                     withCredentials: true,
                 });
                 const notice = res.data;
@@ -103,7 +103,7 @@ function UpdateNotice() {
             if (formData.removeImage) data.append('removeImage', 'true');
             if (formData.image) data.append('image', formData.image);
 
-            const res = await axios.put(`http://localhost:5000/api/notice/update/${id}`, data, {
+            const res = await axios.put(`https://ns-server.onrender.com/api/notice/update/${id}`, data, {
                 withCredentials: true,
                 headers: { 'Content-Type': 'multipart/form-data' },
             });

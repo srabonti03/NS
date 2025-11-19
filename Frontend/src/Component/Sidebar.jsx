@@ -27,7 +27,7 @@ function Sidebar({ isOpen, setSidebarOpen }) {
 
     const fetchCategories = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/api/notice/options", {
+            const response = await axios.get("https://ns-server.onrender.com/api/notice/options", {
                 withCredentials: true,
             });
             setCategories(response.data.categories || []);

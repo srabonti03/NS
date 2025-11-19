@@ -40,7 +40,7 @@ function ChangePassword() {
         try {
             setIsSubmitting(true);
             const response = await axios.put(
-                'http://localhost:5000/api/user/change-password',
+                'https://ns-server.onrender.com/api/user/change-password',
                 formData,
                 { withCredentials: true }
             );

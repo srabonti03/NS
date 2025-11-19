@@ -13,7 +13,7 @@ function Faculty() {
         const fetchTeacher = async () => {
             setLoading(true);
             try {
-                const res = await axios.get(`http://localhost:5000/api/admin/teachers/${id}`, {
+                const res = await axios.get(`https://ns-server.onrender.com/api/admin/teachers/${id}`, {
                     withCredentials: true,
                 });
                 setTeacher(res.data);

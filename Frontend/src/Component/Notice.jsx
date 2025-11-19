@@ -30,7 +30,7 @@ function Notice({ notice }) {
         const fetchCommentCount = async () => {
             try {
                 const res = await axios.get(
-                    `http://localhost:5000/api/comment/comments/${notice.id}`,
+                    `https://ns-server.onrender.com/api/comment/comments/${notice.id}`,
                     { withCredentials: true }
                 );
                 setCommentCount(res.data.totalCount || 0);
@@ -45,7 +45,7 @@ function Notice({ notice }) {
         const fetchShareCount = async () => {
             try {
                 const res = await axios.get(
-                    `http://localhost:5000/api/share/shares/${notice.id}`,
+                    `https://ns-server.onrender.com/api/share/shares/${notice.id}`,
                     { withCredentials: true }
                 );
                 setShareCount(res.data.totalShares || 0);
@@ -60,13 +60,13 @@ function Notice({ notice }) {
         const fetchLikes = async () => {
             try {
                 const res = await axios.get(
-                    `http://localhost:5000/api/like/count/${notice.id}`,
+                    `https://ns-server.onrender.com/api/like/count/${notice.id}`,
                     { withCredentials: true }
                 );
                 setLikeCount(res.data.totalLikes || 0);
 
                 const check = await axios.get(
-                    `http://localhost:5000/api/like/check/${notice.id}`,
+                    `https://ns-server.onrender.com/api/like/check/${notice.id}`,
                     { withCredentials: true }
                 );
                 setIsLiked(check.data.liked || false);
@@ -88,7 +88,7 @@ function Notice({ notice }) {
         const shareUrl = `${window.location.origin}/notice/${notice.id}`;
         try {
             const res = await axios.post(
-                `http://localhost:5000/api/share/shares/${notice.id}`,
+                `https://ns-server.onrender.com/api/share/shares/${notice.id}`,
                 {},
                 { withCredentials: true }
             );
@@ -111,7 +111,7 @@ function Notice({ notice }) {
         try {
             if (isLiked) {
                 const res = await axios.post(
-                    `http://localhost:5000/api/like/unlike/${notice.id}`,
+                    `https://ns-server.onrender.com/api/like/unlike/${notice.id}`,
                     {},
                     { withCredentials: true }
                 );
@@ -119,7 +119,7 @@ function Notice({ notice }) {
                 setLikeCount(res.data.totalLikes || (likeCount - 1));
             } else {
                 const res = await axios.post(
-                    `http://localhost:5000/api/like/like/${notice.id}`,
+                    `https://ns-server.onrender.com/api/like/like/${notice.id}`,
                     {},
                     { withCredentials: true }
                 );

@@ -21,7 +21,7 @@ function Notification({ notification }) {
         if (notification.id && !notification.isRead) {
             try {
                 await fetch(
-                    `http://localhost:5000/api/notification/notifications/${notification.id}/read`,
+                    `https://ns-server.onrender.com/api/notification/notifications/${notification.id}/read`,
                     {
                         method: "PATCH",
                         credentials: "include",

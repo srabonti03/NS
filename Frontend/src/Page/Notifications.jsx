@@ -7,7 +7,7 @@ function Notifications() {
 
     const fetchNotifications = async () => {
         try {
-            const res = await fetch("http://localhost:5000/api/notification/notifications", {
+            const res = await fetch("https://ns-server.onrender.com/api/notification/notifications", {
                 method: "GET",
                 credentials: "include",
             });
@@ -30,7 +30,7 @@ function Notifications() {
         if (notification.id) {
             try {
                 await fetch(
-                    `http://localhost:5000/api/notification/notifications/${notification.id}/read`,
+                    `https://ns-server.onrender.com/api/notification/notifications/${notification.id}/read`,
                     {
                         method: "PATCH",
                         credentials: "include",

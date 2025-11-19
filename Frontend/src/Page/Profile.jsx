@@ -74,7 +74,7 @@ function Profile() {
             if (formData.avatar instanceof File) {
                 data.append('avatar', formData.avatar);
             }
-            const response = await axios.put('http://localhost:5000/api/user/update-profile', data, {
+            const response = await axios.put('https://ns-server.onrender.com/api/user/update-profile', data, {
                 headers: { 'Content-Type': 'multipart/form-data' },
                 withCredentials: true
             });

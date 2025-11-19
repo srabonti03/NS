@@ -55,7 +55,7 @@ function Reset() {
 
         setLoading(true);
         try {
-            const res = await axios.post("http://localhost:5000/api/auth/reset-otp", { email: formData.email });
+            const res = await axios.post("https://ns-server.onrender.com/api/auth/reset-otp", { email: formData.email });
             toast.success(res.data.message, { position: "top-center" });
 
             navigate("/reset-otp", { state: { email: formData.email, newPassword: formData.password } });

@@ -16,7 +16,7 @@
 //     const fetchComments = async () => {
 //       if (!noticeId) return;
 //       try {
-//         const res = await axios.get(`http://localhost:5000/api/comment/comments/${noticeId}`, { withCredentials: true });
+//         const res = await axios.get(`https://ns-server.onrender.com/api/comment/comments/${noticeId}`, { withCredentials: true });
 //         const formattedComments = (res.data.comments || []).map((c) => ({
 //           ...c,
 //           replies: c.replies || [],
@@ -34,7 +34,7 @@
 //   const handleAddComment = async () => {
 //     if (!noticeId || !input.trim()) return;
 //     try {
-//       const res = await axios.post(`http://localhost:5000/api/comment/comment`, { noticeId, text: input }, { withCredentials: true });
+//       const res = await axios.post(`https://ns-server.onrender.com/api/comment/comment`, { noticeId, text: input }, { withCredentials: true });
 //       const newComment = { ...res.data.comment, replies: [], user: res.data.comment.user || { firstName: "Unknown", lastName: "", role: "" } };
 //       setComments((prev) => [newComment, ...prev]);
 //       setInput("");
@@ -47,7 +47,7 @@
 //   const addReply = async ({ commentId, parentReplyId, text }) => {
 //     try {
 //       const res = await axios.post(
-//         `http://localhost:5000/api/comment/reply`,
+//         `https://ns-server.onrender.com/api/comment/reply`,
 //         { commentId, parentReplyId: parentReplyId || null, text },
 //         { withCredentials: true }
 //       );
@@ -82,7 +82,7 @@
 //           <button
 //             onClick={async () => {
 //               try {
-//                 await axios.delete(`http://localhost:5000/api/comment/comment/${commentId}`, { withCredentials: true });
+//                 await axios.delete(`https://ns-server.onrender.com/api/comment/comment/${commentId}`, { withCredentials: true });
 //                 setComments((prev) => prev.filter((c) => c.id !== commentId));
 //                 toast.dismiss();
 //                 toast.success("Comment deleted", { position: "top-center", style: { marginTop: "60px" } });
@@ -115,7 +115,7 @@
 //           <button
 //             onClick={async () => {
 //               try {
-//                 await axios.delete(`http://localhost:5000/api/comment/reply/${replyId}`, { withCredentials: true });
+//                 await axios.delete(`https://ns-server.onrender.com/api/comment/reply/${replyId}`, { withCredentials: true });
 
 //                 const removeReplyRecursively = (list) =>
 //                   list
@@ -227,7 +227,7 @@ const Comments = forwardRef(({ noticeId, noticeAuthorId }, ref) => {
     const fetchComments = async () => {
       if (!noticeId) return;
       try {
-        const res = await axios.get(`http://localhost:5000/api/comment/comments/${noticeId}`, { withCredentials: true });
+        const res = await axios.get(`https://ns-server.onrender.com/api/comment/comments/${noticeId}`, { withCredentials: true });
         const formattedComments = (res.data.comments || []).map((c) => ({
           ...c,
           replies: c.replies || [],
@@ -245,7 +245,7 @@ const Comments = forwardRef(({ noticeId, noticeAuthorId }, ref) => {
   const handleAddComment = async () => {
     if (!noticeId || !input.trim()) return;
     try {
-      const res = await axios.post(`http://localhost:5000/api/comment/comment`, { noticeId, text: input }, { withCredentials: true });
+      const res = await axios.post(`https://ns-server.onrender.com/api/comment/comment`, { noticeId, text: input }, { withCredentials: true });
       const newComment = { ...res.data.comment, replies: [], user: res.data.comment.user || { firstName: "Unknown", lastName: "", role: "" } };
       setComments((prev) => [newComment, ...prev]);
       setInput("");
@@ -258,7 +258,7 @@ const Comments = forwardRef(({ noticeId, noticeAuthorId }, ref) => {
   const addReply = async ({ commentId, parentReplyId, text }) => {
     try {
       const res = await axios.post(
-        `http://localhost:5000/api/comment/reply`,
+        `https://ns-server.onrender.com/api/comment/reply`,
         { commentId, parentReplyId: parentReplyId || null, text },
         { withCredentials: true }
       );
@@ -293,7 +293,7 @@ const Comments = forwardRef(({ noticeId, noticeAuthorId }, ref) => {
           <button
             onClick={async () => {
               try {
-                await axios.delete(`http://localhost:5000/api/comment/comment/${commentId}`, { withCredentials: true });
+                await axios.delete(`https://ns-server.onrender.com/api/comment/comment/${commentId}`, { withCredentials: true });
                 setComments((prev) => prev.filter((c) => c.id !== commentId));
                 toast.dismiss();
                 toast.success("Comment deleted", { position: "top-center", style: { marginTop: "60px" } });
@@ -326,7 +326,7 @@ const Comments = forwardRef(({ noticeId, noticeAuthorId }, ref) => {
           <button
             onClick={async () => {
               try {
-                await axios.delete(`http://localhost:5000/api/comment/reply/${replyId}`, { withCredentials: true });
+                await axios.delete(`https://ns-server.onrender.com/api/comment/reply/${replyId}`, { withCredentials: true });
 
                 const removeReplyRecursively = (list) =>
                   list

@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
 
     const fetchUser = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/api/auth/user-info", {
+            const response = await axios.get("https://ns-server.onrender.com/api/auth/user-info", {
                 withCredentials: true,
             });
             setUser(response.data.user);
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = async () => {
         try {
-            await axios.post("http://localhost:5000/api/auth/logout", {}, { withCredentials: true });
+            await axios.post("https://ns-server.onrender.com/api/auth/logout", {}, { withCredentials: true });
         } catch (err) {
             console.error("Logout error:", err);
         }

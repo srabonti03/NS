@@ -18,7 +18,7 @@ const StudentList = () => {
     const fetchStudents = async () => {
         setLoading(true);
         try {
-            const res = await axios.get("http://localhost:5000/api/admin/students/all", {
+            const res = await axios.get("https://ns-server.onrender.com/api/admin/students/all", {
                 withCredentials: true,
             });
             setStudents(res.data);
@@ -57,7 +57,7 @@ const StudentList = () => {
     const handleToggle = async (id, enabled) => {
         try {
             await axios.patch(
-                `http://localhost:5000/api/admin/students/${id}/status`,
+                `https://ns-server.onrender.com/api/admin/students/${id}/status`,
                 { enabled },
                 { withCredentials: true }
             );

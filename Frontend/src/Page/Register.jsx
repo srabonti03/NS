@@ -66,7 +66,7 @@ function Register() {
             return;
         }
 
-        let baseURL = "http://localhost:5000/api/auth";
+        let baseURL = "https://ns-server.onrender.com/api/auth";
         let url = `${baseURL}/register`;
 
         try {

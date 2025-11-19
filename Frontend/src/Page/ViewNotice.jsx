@@ -12,7 +12,7 @@ function ViewNotice() {
     useEffect(() => {
         const fetchNotice = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/notice/${id}`, {
+                const response = await axios.get(`https://ns-server.onrender.com/api/notice/${id}`, {
                     withCredentials: true,
                 });
                 setNotice(response.data);

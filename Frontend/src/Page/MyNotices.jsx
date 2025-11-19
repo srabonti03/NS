@@ -21,7 +21,7 @@ function MyNotices() {
     const fetchNotices = async () => {
         setLoading(true);
         try {
-            const res = await axios.get(`http://localhost:5000/api/notice/user/${user.id}`, {
+            const res = await axios.get(`https://ns-server.onrender.com/api/notice/user/${user.id}`, {
                 withCredentials: true,
             });
             setNotices(res.data);
@@ -56,7 +56,7 @@ function MyNotices() {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:5000/api/notice/delete/${id}`, { withCredentials: true });
+            await axios.delete(`https://ns-server.onrender.com/api/notice/delete/${id}`, { withCredentials: true });
             toast.info("Notice deleted successfully");
             fetchNotices();
         } catch (err) {

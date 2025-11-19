@@ -17,7 +17,7 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const url = "http://localhost:5000/api/auth/login";
+        const url = "https://ns-server.onrender.com/api/auth/login";
 
         try {
             const payload = { password: formData.password };

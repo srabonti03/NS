@@ -27,7 +27,7 @@ function CreateNotice() {
     useEffect(() => {
         const fetchOptions = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/notice/options', {
+                const res = await axios.get('https://ns-server.onrender.com/api/notice/options', {
                     withCredentials: true,
                 });
                 setSessionOptions(res.data.sessions || []);
@@ -76,7 +76,7 @@ function CreateNotice() {
 
             if (formData.image) data.append('image', formData.image);
 
-            const res = await axios.post('http://localhost:5000/api/notice/create', data, {
+            const res = await axios.post('https://ns-server.onrender.com/api/notice/create', data, {
                 withCredentials: true,
                 headers: { 'Content-Type': 'multipart/form-data' },
             });

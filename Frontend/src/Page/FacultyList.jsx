@@ -18,7 +18,7 @@ const FacultyList = () => {
   const fetchTeachers = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:5000/api/admin/teachers/all", {
+      const res = await axios.get("https://ns-server.onrender.com/api/admin/teachers/all", {
         withCredentials: true,
       });
       const sorted = sortTeachers(res.data);
@@ -70,7 +70,7 @@ const FacultyList = () => {
   const handleApprove = async (id) => {
     try {
       await axios.patch(
-        `http://localhost:5000/api/admin/teachers/${id}/approve`,
+        `https://ns-server.onrender.com/api/admin/teachers/${id}/approve`,
         {},
         { withCredentials: true }
       );
@@ -86,7 +86,7 @@ const FacultyList = () => {
   const handleReject = async (id) => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/admin/teachers/${id}/reject`,
+        `https://ns-server.onrender.com/api/admin/teachers/${id}/reject`,
         { withCredentials: true }
       );
       toast.info("Teacher rejected");
@@ -101,7 +101,7 @@ const FacultyList = () => {
   const handleToggle = async (id, enabled) => {
     try {
       await axios.patch(
-        `http://localhost:5000/api/admin/teachers/${id}/status`,
+        `https://ns-server.onrender.com/api/admin/teachers/${id}/status`,
         { enabled },
         { withCredentials: true }
       );

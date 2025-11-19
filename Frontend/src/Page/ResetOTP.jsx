@@ -40,7 +40,7 @@ function ResetOTP() {
         }
 
         try {
-            const res = await axios.post("http://localhost:5000/api/auth/reset-password", {
+            const res = await axios.post("https://ns-server.onrender.com/api/auth/reset-password", {
                 email,
                 otp: otpCode,
                 newPassword
@@ -61,7 +61,7 @@ function ResetOTP() {
         }
         setResending(true);
         try {
-            const res = await axios.post("http://localhost:5000/api/auth/reset-otp", { email });
+            const res = await axios.post("https://ns-server.onrender.com/api/auth/reset-otp", { email });
             toast.success(res.data.message, { position: "top-center" });
         } catch (err) {
             toast.error(err.response?.data?.message || "Failed to resend OTP", { position: "top-center" });

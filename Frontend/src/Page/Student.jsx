@@ -13,7 +13,7 @@ function Student() {
         const fetchStudent = async () => {
             setLoading(true);
             try {
-                const res = await axios.get(`http://localhost:5000/api/admin/students/${id}`, {
+                const res = await axios.get(`https://ns-server.onrender.com/api/admin/students/${id}`, {
                     withCredentials: true,
                 });
                 setStudent(res.data);

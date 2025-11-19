@@ -18,8 +18,8 @@ function NoticeFeed() {
             const category = params.get("category");
 
             const url = category
-                ? "http://localhost:5000/api/notice/all-by-category?category=" + encodeURIComponent(category)
-                : "http://localhost:5000/api/notice/all";
+                ? "https://ns-server.onrender.com/api/notice/all-by-category?category=" + encodeURIComponent(category)
+                : "https://ns-server.onrender.com/api/notice/all";
 
             const response = await axios.get(url, { withCredentials: true });
             let fetchedNotices = response.data;

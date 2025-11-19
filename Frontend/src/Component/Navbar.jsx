@@ -12,7 +12,7 @@ function Navbar({ dark, setDark, toggleSidebar }) {
     useEffect(() => {
         const fetchUnreadCount = async () => {
             try {
-                const res = await fetch("http://localhost:5000/api/notification/notifications", {
+                const res = await fetch("https://ns-server.onrender.com/api/notification/notifications", {
                     method: "GET",
                     credentials: "include",
                 });

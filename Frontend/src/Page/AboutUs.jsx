@@ -12,7 +12,7 @@ function AboutUs() {
     useEffect(() => {
         const fetchAdmins = async () => {
             try {
-                const res = await axios.get("http://localhost:5000/api/admin/admins/all");
+                const res = await axios.get("https://ns-server.onrender.com/api/admin/admins/all");
                 setAdmins(res.data);
             } catch (err) {
                 console.error(err);
@@ -21,7 +21,7 @@ function AboutUs() {
 
         const fetchTotalStudents = async () => {
             try {
-                const res = await axios.get("http://localhost:5000/api/student/total");
+                const res = await axios.get("https://ns-server.onrender.com/api/student/total");
                 setTotalStudents(res.data.totalStudents);
             } catch (err) {
                 console.error("Failed to fetch total students:", err);
@@ -30,7 +30,7 @@ function AboutUs() {
 
         const fetchTotalNotices = async () => {
             try {
-                const res = await axios.get("http://localhost:5000/api/notice/total");
+                const res = await axios.get("https://ns-server.onrender.com/api/notice/total");
                 setTotalNotices(res.data.totalNotices);
             } catch (err) {
                 console.error("Failed to fetch total notices:", err);
@@ -39,7 +39,7 @@ function AboutUs() {
 
         const fetchTotalTeachers = async () => {
             try {
-                const res = await axios.get("http://localhost:5000/api/teacher/total");
+                const res = await axios.get("https://ns-server.onrender.com/api/teacher/total");
                 setTotalTeachers(res.data.totalTeachers);
             } catch (err) {
                 console.error("Failed to fetch total teachers:", err);

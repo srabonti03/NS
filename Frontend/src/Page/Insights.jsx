@@ -30,7 +30,7 @@ function Insights() {
     useEffect(() => {
         const fetchInsights = async () => {
             try {
-                const res = await axios.get("http://localhost:5000/api/admin/insights", { withCredentials: true });
+                const res = await axios.get("https://ns-server.onrender.com/api/admin/insights", { withCredentials: true });
                 setStats(res.data);
             } catch (err) {
                 console.error("Error fetching insights:", err);
