@@ -110,7 +110,6 @@ export const registerUser = async (req, res) => {
 
 // ======================= LOGIN =======================
 
-
 // Login
 export const loginUser = async (req, res) => {
     try {
@@ -140,11 +139,10 @@ export const loginUser = async (req, res) => {
 
         const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 
-        // HTTPS-ready cookie
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
+            secure: true,
+            sameSite: "None",
             maxAge: 1000 * 60 * 60 * 24,
         });
 
@@ -157,7 +155,6 @@ export const loginUser = async (req, res) => {
 
 // ======================= USER INFO =======================
 
-// Get Current User
 export const getCurrentUser = async (req, res) => {
     try {
         const user = await prisma.user.findUnique({ where: { id: req.user.id } });
@@ -171,10 +168,13 @@ export const getCurrentUser = async (req, res) => {
 
 // ======================= LOGOUT =======================
 
-// Logout User
 export const logoutUser = async (req, res) => {
     try {
-        res.clearCookie('token');
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: true,
+            sameSite: "None"
+        });
         res.json({ message: 'Logged out successfully' });
     } catch (err) {
         console.error(err);
