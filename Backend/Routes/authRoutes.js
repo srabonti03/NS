@@ -9,7 +9,7 @@ import {
     getCurrentUser,
     logoutUser
 } from '../Controllers/authControllers.js';
-import { verifyTokenMiddleware } from '../middlewares/authMiddleware.js';
+import { verifyTokenMiddleware } from '../Middlewares/authMiddleware.js';
 
 const router = express.Router();
 

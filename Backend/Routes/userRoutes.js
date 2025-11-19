@@ -1,6 +1,6 @@
 import express from 'express';
 import { updateProfile, changePassword } from '../Controllers/userControllers.js';
-import { verifyTokenMiddleware } from '../middlewares/authMiddleware.js';
+import { verifyTokenMiddleware } from '../Middlewares/authMiddleware.js';
 import multer from 'multer';
 
 const router = express.Router();

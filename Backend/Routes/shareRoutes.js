@@ -1,6 +1,6 @@
 import express from 'express';
 import { getShareCount, addShare } from '../Controllers/shareControllers.js';
-import { verifyTokenMiddleware } from '../middlewares/authMiddleware.js';
+import { verifyTokenMiddleware } from '../Middlewares/authMiddleware.js';
 
 const router = express.Router();
 

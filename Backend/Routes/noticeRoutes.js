@@ -11,7 +11,7 @@ import {
     getAllTeacherNotices,
     getTotalNotices,
 } from '../Controllers/noticeControllers.js';
-import { verifyTokenMiddleware } from '../middlewares/authMiddleware.js';
+import { verifyTokenMiddleware } from '../Middlewares/authMiddleware.js';
 import multer from 'multer';
 
 const router = express.Router();
