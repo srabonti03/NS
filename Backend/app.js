@@ -1,4 +1,3 @@
-// server.js
 import dotenv from "dotenv";
 dotenv.config({ override: true });
 
@@ -6,7 +5,6 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
-// Import your routes
 import authRoutes from './Routes/authRoutes.js';
 import userRoutes from './Routes/userRoutes.js';
 import adminRoutes from "./Routes/adminRoutes.js";
@@ -34,7 +32,7 @@ if (process.env.NODE_ENV === "production") {
 
 app.use(cors({
     origin: process.env.FRONTEND_URL,
-    credentials: true
+    credentials: true,
 }));
 
 app.use(cookieParser());
