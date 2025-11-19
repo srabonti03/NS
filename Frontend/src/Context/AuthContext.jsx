@@ -22,11 +22,6 @@ export const AuthProvider = ({ children }) => {
         } catch (err) {
             if (err.response?.status === 401) {
                 setUser(null);
-                if (!publicPaths.includes(window.location.pathname)) {
-                    navigate("/login");
-                }
-            } else {
-                console.error("Failed to fetch user:", err.response?.data?.message || err.message);
             }
         } finally {
             setInitialLoading(false);
@@ -36,9 +31,7 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         try {
             await axios.post("https://ns-server.onrender.com/api/auth/logout", {}, { withCredentials: true });
-        } catch (err) {
-            console.error("Logout error:", err);
-        }
+        } catch (err) {}
         if (intervalRef.current) {
             clearInterval(intervalRef.current);
             intervalRef.current = null;
@@ -68,6 +61,7 @@ export const AuthProvider = ({ children }) => {
                 fetchUser,
                 logout,
                 updateUser,
+                initialLoading,
             }}
         >
             {children}
