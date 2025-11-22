@@ -1,10 +1,10 @@
 import nodemailer from "nodemailer";
 
-const { GMAIL_USER, GMAIL_APP } = process.env;
+const { GMAIL_USER, GMAIL_PASS } = process.env;
 
-if (!GMAIL_USER || !GMAIL_APP) {
+if (!GMAIL_USER || !GMAIL_PASS) {
     throw new Error(
-        "Environment variables GMAIL_USER and GMAIL_APP must be set."
+        "Environment variables GMAIL_USER and GMAIL_PASS must be set."
     );
 }
 
@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
     secure: true,
     auth: {
         user: GMAIL_USER,
-        pass: GMAIL_APP,
+        pass: GMAIL_PASS,
     },
     tls: {
         rejectUnauthorized: false,
