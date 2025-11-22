@@ -1,20 +1,24 @@
 import nodemailer from "nodemailer";
 
-const { GMAIL_USER, GMAIL_PASS } = process.env;
+const { GMAIL_USER, GMAIL_APP } = process.env;
 
-if (!GMAIL_USER || !GMAIL_PASS) {
+if (!GMAIL_USER || !GMAIL_APP) {
     throw new Error(
-        "Environment variables GMAIL_USER and GMAIL_PASS must be set."
+        "Environment variables GMAIL_USER and GMAIL_APP must be set."
     );
 }
 
 const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
     auth: {
         user: GMAIL_USER,
-        pass: GMAIL_PASS,
+        pass: GMAIL_APP,
     },
-    secure: true,
+    tls: {
+        rejectUnauthorized: false,
+    },
 });
 
 export async function sendOtpEmail(email, otp) {
@@ -44,10 +48,10 @@ NoticeSphere Team`,
     };
 
     try {
-        await transporter.sendMail(mailOptions);
-        console.log(`OTP email successfully sent to ${email}`);
+        const info = await transporter.sendMail(mailOptions);
+        console.log(`OTP email successfully sent to ${email}`, info.messageId);
     } catch (error) {
-        console.error("Failed to send OTP email:", error);
+        console.error("Failed to send OTP email:", error.response || error);
         throw new Error("Unable to send OTP email. Please try again later.");
     }
 }
