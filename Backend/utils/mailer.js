@@ -1,14 +1,21 @@
-import sgMail from '@sendgrid/mail';
-import dotenv from 'dotenv';
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
 dotenv.config({ override: true });
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const transporter = nodemailer.createTransport({
+    host: process.env.MAILTRAP_HOST,
+    port: process.env.MAILTRAP_PORT,
+    auth: {
+        user: process.env.MAILTRAP_USER,
+        pass: process.env.MAILTRAP_PASS,
+    },
+});
 
 export async function sendOtpEmail(email, otp) {
-    const msg = {
+    const mailOptions = {
+        from: process.env.MAILTRAP_FROM,
         to: email,
-        from: 'srabonti.talukdar2003@gmail.com',
-        subject: 'NoticeSphere OTP Verification',
+        subject: "NoticeSphere OTP Verification",
         text: `Your OTP is: ${otp}`,
         html: `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
@@ -20,10 +27,10 @@ export async function sendOtpEmail(email, otp) {
     };
 
     try {
-        await sgMail.send(msg);
-        console.log(`OTP email sent to ${email}`);
+        const info = await transporter.sendMail(mailOptions);
+        console.log(`OTP email sent to ${email}:`, info.messageId);
     } catch (error) {
-        console.error('Failed to send OTP email:', error);
-        throw new Error('Unable to send OTP email. Please try again later.');
+        console.error("Failed to send OTP email:", error);
+        throw new Error("Unable to send OTP email. Please try again later.");
     }
 }
