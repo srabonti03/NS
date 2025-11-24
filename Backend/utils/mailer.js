@@ -1,36 +1,53 @@
-import SibApiV3Sdk from "sib-api-v3-sdk";
+import nodemailer from "nodemailer";
 
-if (!process.env.BREVO_API_KEY || !process.env.BREVO_USER) {
-    throw new Error("Environment variables BREVO_API_KEY and BREVO_USER must be set.");
+const { GMAIL_USER, GMAIL_PASS } = process.env;
+
+if (!GMAIL_USER || !GMAIL_PASS) {
+    throw new Error(
+        "Environment variables GMAIL_USER and GMAIL_PASS must be set."
+    );
 }
 
-const defaultClient = SibApiV3Sdk.ApiClient.instance;
-defaultClient.authentications["api-key"].apiKey = process.env.BREVO_API_KEY;
-
-const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: GMAIL_USER,
+        pass: GMAIL_PASS,
+    },
+    secure: true,
+});
 
 export async function sendOtpEmail(email, otp) {
-    const sendSmtpEmail = {
-        sender: {
-            name: "NoticeSphere",
-            email: process.env.BREVO_USER
-        },
-        to: [{ email }],
-        subject: "Your OTP Code",
-        htmlContent: `
-            <div>
-                <h2>Your OTP Code</h2>
-                <p>Your OTP is: <strong>${otp}</strong></p>
-                <p>This code expires in 10 minutes.</p>
-            </div>
+    const mailOptions = {
+        from: `"NoticeSphere Academic Portal" <${GMAIL_USER}>`,
+        to: email,
+        subject: "Your One-Time Password (OTP)",
+        text: `Hello,
+
+Your OTP code is: ${otp}
+
+This code is valid for 10 minutes. If you did not request this, please ignore this email.
+
+Thank you,
+NoticeSphere Team`,
+        html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <h2 style="color: #0056b3;">NoticeSphere OTP Verification</h2>
+            <p>Hello,</p>
+            <p>Your one-time password (OTP) is: <strong>${otp}</strong></p>
+            <p>This OTP is valid for the next 10 minutes. Please do not share it with anyone.</p>
+            <p>If you did not request this OTP, kindly ignore this email.</p>
+            <br/>
+            <p style="font-size: 0.9em; color: #555;">NoticeSphere Academic Portal</p>
+        </div>
         `,
     };
 
     try {
-        const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
-        console.log(`OTP email sent to ${email}`, response);
-    } catch (err) {
-        console.error("Failed to send OTP:", err.response?.body || err);
-        throw err;
+        await transporter.sendMail(mailOptions);
+        console.log(`OTP email successfully sent to ${email}`);
+    } catch (error) {
+        console.error("Failed to send OTP email:", error);
+        throw new Error("Unable to send OTP email. Please try again later.");
     }
 }
