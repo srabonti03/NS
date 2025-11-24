@@ -11,7 +11,7 @@ const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
 export async function sendOtpEmail(email, otp) {
     const sendSmtpEmail = {
-        sender: { name: "NoticeSphere", email: "your_verified_sender_email@domain.com" },
+        sender: { name: "NoticeSphere", email: "srabonti.talukdar2003@gmail.com" },
         to: [{ email }],
         subject: "Your OTP Code",
         htmlContent: `<div>
