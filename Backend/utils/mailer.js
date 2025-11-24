@@ -4,12 +4,14 @@ if (!process.env.BREVO_API_KEY || !process.env.BREVO_USER) {
     throw new Error("Environment variables BREVO_API_KEY and BREVO_USER must be set.");
 }
 
+// Configure API client
 const defaultClient = SibApiV3Sdk.ApiClient.instance;
 const apiKey = defaultClient.authentications["api-key"];
 apiKey.apiKey = process.env.BREVO_API_KEY;
 
 const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
+// Function to send OTP email
 export async function sendOtpEmail(email, otp) {
     const sendSmtpEmail = {
         sender: { name: "NoticeSphere", email: process.env.BREVO_USER },
@@ -21,8 +23,6 @@ export async function sendOtpEmail(email, otp) {
         <p>Hello,</p>
         <p>Your one-time password (OTP) is: <strong>${otp}</strong></p>
         <p>This OTP is valid for the next 10 minutes. Please do not share it with anyone.</p>
-        <br/>
-        <p style="font-size: 0.9em; color: #555;">NoticeSphere Academic Portal</p>
       </div>
     `,
     };
@@ -31,7 +31,7 @@ export async function sendOtpEmail(email, otp) {
         await apiInstance.sendTransacEmail(sendSmtpEmail);
         console.log(`OTP email sent to ${email}`);
     } catch (err) {
-        console.error("Failed to send OTP:", err);
+        console.error("Failed to send OTP:", err.response?.body || err);
         throw err;
     }
 }
