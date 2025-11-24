@@ -1,38 +1,34 @@
-import nodemailer from "nodemailer";
+import SibApiV3Sdk from "sib-api-v3-sdk";
 
-const { BREVO_HOST, BREVO_PORT, BREVO_USER, BREVO_PASS } = process.env;
-
-if (!BREVO_USER || !BREVO_PASS || !BREVO_HOST || !BREVO_PORT) {
-    throw new Error("Environment variables BREVO_HOST, BREVO_PORT, BREVO_USER, BREVO_PASS must be set.");
+if (!process.env.BREVO_API_KEY || !process.env.BREVO_USER) {
+    throw new Error("Environment variables BREVO_API_KEY and BREVO_USER must be set.");
 }
 
-const transporter = nodemailer.createTransport({
-    host: BREVO_HOST,
-    port: Number(BREVO_PORT),
-    secure: true,
-    auth: {
-        user: BREVO_USER,
-        pass: BREVO_PASS,
-    },
-});
+const defaultClient = SibApiV3Sdk.ApiClient.instance;
+const apiKey = defaultClient.authentications["api-key"];
+apiKey.apiKey = process.env.BREVO_API_KEY;
+
+const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
 export async function sendOtpEmail(email, otp) {
-    const mailOptions = {
-        from: `"NoticeSphere" <${BREVO_USER}>`,
-        to: email,
+    const sendSmtpEmail = {
+        sender: { name: "NoticeSphere", email: process.env.BREVO_USER },
+        to: [{ email }],
         subject: "Your OTP Code",
-        text: `Your OTP is: ${otp}`,
-        html: `
-            <div>
-                <h2>Your OTP Code</h2>
-                <p>Your OTP is: <strong>${otp}</strong></p>
-                <p>This code expires in 10 minutes.</p>
-            </div>
-        `,
+        htmlContent: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <h2 style="color: #0056b3;">NoticeSphere OTP Verification</h2>
+        <p>Hello,</p>
+        <p>Your one-time password (OTP) is: <strong>${otp}</strong></p>
+        <p>This OTP is valid for the next 10 minutes. Please do not share it with anyone.</p>
+        <br/>
+        <p style="font-size: 0.9em; color: #555;">NoticeSphere Academic Portal</p>
+      </div>
+    `,
     };
 
     try {
-        await transporter.sendMail(mailOptions);
+        await apiInstance.sendTransacEmail(sendSmtpEmail);
         console.log(`OTP email sent to ${email}`);
     } catch (err) {
         console.error("Failed to send OTP:", err);
