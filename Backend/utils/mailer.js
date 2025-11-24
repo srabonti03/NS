@@ -4,27 +4,20 @@ if (!process.env.BREVO_API_KEY || !process.env.BREVO_USER) {
     throw new Error("Environment variables BREVO_API_KEY and BREVO_USER must be set.");
 }
 
-// Configure API client
 const defaultClient = SibApiV3Sdk.ApiClient.instance;
-const apiKey = defaultClient.authentications["api-key"];
-apiKey.apiKey = process.env.BREVO_API_KEY;
-
+defaultClient.authentications["api-key"].apiKey = process.env.BREVO_API_KEY;
 const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
-// Function to send OTP email
 export async function sendOtpEmail(email, otp) {
     const sendSmtpEmail = {
         sender: { name: "NoticeSphere", email: process.env.BREVO_USER },
         to: [{ email }],
         subject: "Your OTP Code",
-        htmlContent: `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-        <h2 style="color: #0056b3;">NoticeSphere OTP Verification</h2>
-        <p>Hello,</p>
-        <p>Your one-time password (OTP) is: <strong>${otp}</strong></p>
-        <p>This OTP is valid for the next 10 minutes. Please do not share it with anyone.</p>
-      </div>
-    `,
+        htmlContent: `<div>
+            <h2>Your OTP Code</h2>
+            <p>Your OTP is: <strong>${otp}</strong></p>
+            <p>This code expires in 10 minutes.</p>
+        </div>`,
     };
 
     try {
