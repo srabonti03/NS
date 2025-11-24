@@ -190,10 +190,10 @@ export const verifyOtp = async (req, res) => {
         const { email, otp } = req.body;
 
         const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) return res.status(400).json({ message: "User not found" });
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
         if (!isOtpValid(user.otp, user.otpExpiresAt) || user.otp !== otp.trim()) {
-            return res.status(400).json({ message: "Invalid or expired OTP" });
+            return res.status(400).json({ success: false, message: "Invalid or expired OTP" });
         }
 
         await prisma.user.update({
@@ -201,9 +201,10 @@ export const verifyOtp = async (req, res) => {
             data: { otp: null, otpExpiresAt: null, isVerified: true }
         });
 
-        res.json({ message: "OTP verified successfully" });
+        res.json({ success: true, message: "OTP verified successfully" });
     } catch (err) {
-        res.status(500).json({ message: "Server error" });
+        console.error("verifyOtp error:", err);
+        res.status(500).json({ success: false, message: "Internal server error" });
     }
 };
 
@@ -213,7 +214,7 @@ export const resetOtp = async (req, res) => {
         const { email } = req.body;
 
         const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) return res.status(400).json({ message: "User not found" });
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
         const otp = generateOtp();
         const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
@@ -227,24 +228,25 @@ export const resetOtp = async (req, res) => {
             await sendOtpEmail(email, otp);
         } catch (emailErr) {
             console.error("Failed to send OTP:", emailErr);
-            return res.status(500).json({ message: "Failed to send OTP email" });
+            return res.status(500).json({ success: false, message: "Failed to send OTP email" });
         }
 
-        res.json({ message: "OTP sent successfully" });
+        res.json({ success: true, message: "OTP sent successfully" });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Server error" });
+        console.error("resetOtp error:", err);
+        res.status(500).json({ success: false, message: "Internal server error" });
     }
-};
+}
 
 // Resend OTP
 export const resendOtp = async (req, res) => {
     try {
         const { email } = req.body;
-        const otp = generateOtp();
 
         const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) return res.status(400).json({ message: "User not found" });
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+        const otp = generateOtp();
 
         await prisma.user.update({
             where: { email },
@@ -255,12 +257,13 @@ export const resendOtp = async (req, res) => {
             await sendOtpEmail(email, otp);
         } catch (emailErr) {
             console.error("Failed to resend OTP:", emailErr);
-            return res.status(500).json({ message: "Failed to send OTP email" });
+            return res.status(500).json({ success: false, message: "Failed to send OTP email" });
         }
 
-        res.json({ message: "OTP resent successfully" });
+        res.json({ success: true, message: "OTP resent successfully" });
     } catch (err) {
-        res.status(500).json({ message: "Server error" });
+        console.error("resendOtp error:", err);
+        res.status(500).json({ success: false, message: "Internal server error" });
     }
 };
 
@@ -270,14 +273,14 @@ export const resetPasswordWithOtp = async (req, res) => {
         const { email, otp, newPassword } = req.body;
 
         const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) return res.status(400).json({ message: "User not found" });
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
         if (!isOtpValid(user.otp, user.otpExpiresAt) || user.otp !== otp.trim()) {
-            return res.status(400).json({ message: "Invalid or expired OTP" });
+            return res.status(400).json({ success: false, message: "Invalid or expired OTP" });
         }
 
         if (!isPasswordStrong(newPassword)) {
-            return res.status(400).json({ message: "Weak password" });
+            return res.status(400).json({ success: false, message: "Password is too weak" });
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -286,9 +289,9 @@ export const resetPasswordWithOtp = async (req, res) => {
             data: { password: hashedPassword, otp: null, otpExpiresAt: null }
         });
 
-        res.json({ message: "Password reset successful" });
+        res.json({ success: true, message: "Password reset successful" });
     } catch (err) {
         console.error("resetPasswordWithOtp error:", err);
-        res.status(500).json({ message: "Server error" });
+        res.status(500).json({ success: false, message: "Internal server error" });
     }
 };
