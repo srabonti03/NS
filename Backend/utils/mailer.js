@@ -3,9 +3,7 @@ import nodemailer from "nodemailer";
 const { GMAIL_USER, GMAIL_PASS } = process.env;
 
 if (!GMAIL_USER || !GMAIL_PASS) {
-    throw new Error(
-        "Environment variables GMAIL_USER and GMAIL_PASS must be set."
-    );
+    throw new Error("Environment variables GMAIL_USER and GMAIL_PASS must be set.");
 }
 
 const transporter = nodemailer.createTransport({
@@ -14,7 +12,8 @@ const transporter = nodemailer.createTransport({
         user: GMAIL_USER,
         pass: GMAIL_PASS,
     },
-    secure: true,
+    port: 587,
+    secure: false,
 });
 
 export async function sendOtpEmail(email, otp) {
