@@ -1,14 +1,14 @@
 import nodemailer from "nodemailer";
 
-const { BREVO_USER, BREVO_PASS } = process.env;
+const { BREVO_HOST, BREVO_PORT, BREVO_USER, BREVO_PASS } = process.env;
 
-if (!BREVO_USER || !BREVO_PASS) {
-    throw new Error("Environment variables BREVO_USER and BREVO_PASS must be set.");
+if (!BREVO_USER || !BREVO_PASS || !BREVO_HOST || !BREVO_PORT) {
+    throw new Error("Environment variables BREVO_HOST, BREVO_PORT, BREVO_USER, BREVO_PASS must be set.");
 }
 
 const transporter = nodemailer.createTransport({
-    host: "smtp-relay.brevo.com",
-    port: 587,
+    host: BREVO_HOST,
+    port: Number(BREVO_PORT),
     secure: false,
     auth: {
         user: BREVO_USER,
