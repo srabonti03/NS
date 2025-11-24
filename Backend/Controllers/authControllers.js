@@ -15,22 +15,22 @@ export const registerUser = async (req, res) => {
     try {
         const { role, firstName, lastName, email, password, session, dept, section, regNo, secretCode } = req.body;
 
-        if (!isEmailValid(email)) return res.status(400).json({ message: "Invalid email" });
-        if (!isPasswordStrong(password)) return res.status(400).json({ message: "Weak password" });
+        if (!isEmailValid(email)) return res.status(400).json({ success: false, message: "Invalid email" });
+        if (!isPasswordStrong(password)) return res.status(400).json({ success: false, message: "Weak password" });
 
         const existingUser = await prisma.user.findUnique({ where: { email } });
 
         if (existingUser && existingUser.isVerified) {
-            return res.status(400).json({ message: "Email already registered" });
+            return res.status(400).json({ success: false, message: "Email already registered" });
         }
 
         let finalRegNo = null;
 
         if (role === "student") {
-            if (!regNo) return res.status(400).json({ message: "Registration Number is required for students" });
+            if (!regNo) return res.status(400).json({ success: false, message: "Registration Number is required for students" });
 
             const existingRegNo = await prisma.user.findUnique({ where: { regNo } });
-            if (existingRegNo && existingRegNo.isVerified) return res.status(400).json({ message: "RegNo already registered" });
+            if (existingRegNo && existingRegNo.isVerified) return res.status(400).json({ success: false, message: "RegNo already registered" });
 
             finalRegNo = regNo;
         } else {
@@ -40,7 +40,7 @@ export const registerUser = async (req, res) => {
         if (role === "admin") {
             const STATIC_ADMIN_SECRET = "NS-Adm!n-42Secure";
             if (secretCode !== STATIC_ADMIN_SECRET) {
-                return res.status(401).json({ message: "Invalid secret code" });
+                return res.status(401).json({ success: false, message: "Invalid secret code" });
             }
         }
 
@@ -98,13 +98,13 @@ export const registerUser = async (req, res) => {
                 await prisma.user.delete({ where: { id: newUser.id } });
             }
 
-            return res.status(500).json({ message: "Failed to send OTP email, user not created" });
+            return res.status(500).json({ success: false, message: "Failed to send OTP email, user not created" });
         }
 
-        res.status(201).json({ message: `${role} registered successfully, OTP sent`, userId: newUser.id });
+        res.status(201).json({ success: true, message: `${role} registered successfully, OTP sent`, data: { userId: newUser.id } });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Server error" });
+        console.error("registerUser error:", err);
+        res.status(500).json({ success: false, message: "Internal server error" });
     }
 };
 
