@@ -1,16 +1,17 @@
 import SibApiV3Sdk from "sib-api-v3-sdk";
 
-if (!process.env.BREVO_API_KEY || !process.env.BREVO_USER) {
-    throw new Error("Environment variables BREVO_API_KEY and BREVO_USER must be set.");
+if (!process.env.BREVO_API_KEY) {
+    throw new Error("Environment variable BREVO_API_KEY must be set.");
 }
 
 const defaultClient = SibApiV3Sdk.ApiClient.instance;
 defaultClient.authentications["api-key"].apiKey = process.env.BREVO_API_KEY;
+
 const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
 export async function sendOtpEmail(email, otp) {
     const sendSmtpEmail = {
-        sender: { name: "NoticeSphere", email: process.env.BREVO_USER },
+        sender: { name: "NoticeSphere", email: "your_verified_sender_email@domain.com" },
         to: [{ email }],
         subject: "Your OTP Code",
         htmlContent: `<div>
