@@ -15,22 +15,22 @@ export const registerUser = async (req, res) => {
     try {
         const { role, firstName, lastName, email, password, session, dept, section, regNo, secretCode } = req.body;
 
-        if (!isEmailValid(email)) return res.status(400).json({ success: false, message: "Invalid email" });
-        if (!isPasswordStrong(password)) return res.status(400).json({ success: false, message: "Weak password" });
+        if (!isEmailValid(email)) return res.status(400).json({ message: "Invalid email" });
+        if (!isPasswordStrong(password)) return res.status(400).json({ message: "Weak password" });
 
         const existingUser = await prisma.user.findUnique({ where: { email } });
 
         if (existingUser && existingUser.isVerified) {
-            return res.status(400).json({ success: false, message: "Email already registered" });
+            return res.status(400).json({ message: "Email already registered" });
         }
 
         let finalRegNo = null;
 
         if (role === "student") {
-            if (!regNo) return res.status(400).json({ success: false, message: "Registration Number is required for students" });
+            if (!regNo) return res.status(400).json({ message: "Registration Number is required for students" });
 
             const existingRegNo = await prisma.user.findUnique({ where: { regNo } });
-            if (existingRegNo && existingRegNo.isVerified) return res.status(400).json({ success: false, message: "RegNo already registered" });
+            if (existingRegNo && existingRegNo.isVerified) return res.status(400).json({ message: "RegNo already registered" });
 
             finalRegNo = regNo;
         } else {
@@ -40,7 +40,7 @@ export const registerUser = async (req, res) => {
         if (role === "admin") {
             const STATIC_ADMIN_SECRET = "NS-Adm!n-42Secure";
             if (secretCode !== STATIC_ADMIN_SECRET) {
-                return res.status(401).json({ success: false, message: "Invalid secret code" });
+                return res.status(401).json({ message: "Invalid secret code" });
             }
         }
 
@@ -98,13 +98,13 @@ export const registerUser = async (req, res) => {
                 await prisma.user.delete({ where: { id: newUser.id } });
             }
 
-            return res.status(500).json({ success: false, message: "Failed to send OTP email, user not created" });
+            return res.status(500).json({ message: "Failed to send OTP email, user not created" });
         }
 
-        res.status(201).json({ success: true, message: `${role} registered successfully, OTP sent`, data: { userId: newUser.id } });
+        res.status(201).json({ message: `${role} registered successfully, OTP sent`, userId: newUser.id });
     } catch (err) {
-        console.error("registerUser error:", err);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
     }
 };
 
@@ -190,10 +190,10 @@ export const verifyOtp = async (req, res) => {
         const { email, otp } = req.body;
 
         const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+        if (!user) return res.status(400).json({ message: "User not found" });
 
         if (!isOtpValid(user.otp, user.otpExpiresAt) || user.otp !== otp.trim()) {
-            return res.status(400).json({ success: false, message: "Invalid or expired OTP" });
+            return res.status(400).json({ message: "Invalid or expired OTP" });
         }
 
         await prisma.user.update({
@@ -201,10 +201,9 @@ export const verifyOtp = async (req, res) => {
             data: { otp: null, otpExpiresAt: null, isVerified: true }
         });
 
-        res.json({ success: true, message: "OTP verified successfully" });
+        res.json({ message: "OTP verified successfully" });
     } catch (err) {
-        console.error("verifyOtp error:", err);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ message: "Server error" });
     }
 };
 
@@ -214,7 +213,7 @@ export const resetOtp = async (req, res) => {
         const { email } = req.body;
 
         const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+        if (!user) return res.status(400).json({ message: "User not found" });
 
         const otp = generateOtp();
         const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
@@ -228,25 +227,24 @@ export const resetOtp = async (req, res) => {
             await sendOtpEmail(email, otp);
         } catch (emailErr) {
             console.error("Failed to send OTP:", emailErr);
-            return res.status(500).json({ success: false, message: "Failed to send OTP email" });
+            return res.status(500).json({ message: "Failed to send OTP email" });
         }
 
-        res.json({ success: true, message: "OTP sent successfully" });
+        res.json({ message: "OTP sent successfully" });
     } catch (err) {
-        console.error("resetOtp error:", err);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
     }
-}
+};
 
 // Resend OTP
 export const resendOtp = async (req, res) => {
     try {
         const { email } = req.body;
+        const otp = generateOtp();
 
         const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) return res.status(404).json({ success: false, message: "User not found" });
-
-        const otp = generateOtp();
+        if (!user) return res.status(400).json({ message: "User not found" });
 
         await prisma.user.update({
             where: { email },
@@ -257,13 +255,12 @@ export const resendOtp = async (req, res) => {
             await sendOtpEmail(email, otp);
         } catch (emailErr) {
             console.error("Failed to resend OTP:", emailErr);
-            return res.status(500).json({ success: false, message: "Failed to send OTP email" });
+            return res.status(500).json({ message: "Failed to send OTP email" });
         }
 
-        res.json({ success: true, message: "OTP resent successfully" });
+        res.json({ message: "OTP resent successfully" });
     } catch (err) {
-        console.error("resendOtp error:", err);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ message: "Server error" });
     }
 };
 
@@ -273,14 +270,14 @@ export const resetPasswordWithOtp = async (req, res) => {
         const { email, otp, newPassword } = req.body;
 
         const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+        if (!user) return res.status(400).json({ message: "User not found" });
 
         if (!isOtpValid(user.otp, user.otpExpiresAt) || user.otp !== otp.trim()) {
-            return res.status(400).json({ success: false, message: "Invalid or expired OTP" });
+            return res.status(400).json({ message: "Invalid or expired OTP" });
         }
 
         if (!isPasswordStrong(newPassword)) {
-            return res.status(400).json({ success: false, message: "Password is too weak" });
+            return res.status(400).json({ message: "Weak password" });
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -289,9 +286,9 @@ export const resetPasswordWithOtp = async (req, res) => {
             data: { password: hashedPassword, otp: null, otpExpiresAt: null }
         });
 
-        res.json({ success: true, message: "Password reset successful" });
+        res.json({ message: "Password reset successful" });
     } catch (err) {
         console.error("resetPasswordWithOtp error:", err);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ message: "Server error" });
     }
 };
