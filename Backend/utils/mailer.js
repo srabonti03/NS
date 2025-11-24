@@ -9,7 +9,7 @@ if (!BREVO_USER || !BREVO_PASS || !BREVO_HOST || !BREVO_PORT) {
 const transporter = nodemailer.createTransport({
     host: BREVO_HOST,
     port: Number(BREVO_PORT),
-    secure: false,
+    secure: true,
     auth: {
         user: BREVO_USER,
         pass: BREVO_PASS,
