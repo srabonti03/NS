@@ -1,7 +1,7 @@
 import SibApiV3Sdk from "sib-api-v3-sdk";
 
-if (!process.env.BREVO_API_KEY) {
-    throw new Error("Environment variable BREVO_API_KEY must be set.");
+if (!process.env.BREVO_API_KEY || !process.env.BREVO_USER) {
+    throw new Error("Environment variables BREVO_API_KEY and BREVO_USER must be set.");
 }
 
 const defaultClient = SibApiV3Sdk.ApiClient.instance;
@@ -11,19 +11,24 @@ const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
 export async function sendOtpEmail(email, otp) {
     const sendSmtpEmail = {
-        sender: { name: "NoticeSphere", email: "srabonti.talukdar2003@gmail.com" },
+        sender: {
+            name: "NoticeSphere",
+            email: process.env.BREVO_USER
+        },
         to: [{ email }],
         subject: "Your OTP Code",
-        htmlContent: `<div>
-            <h2>Your OTP Code</h2>
-            <p>Your OTP is: <strong>${otp}</strong></p>
-            <p>This code expires in 10 minutes.</p>
-        </div>`,
+        htmlContent: `
+            <div>
+                <h2>Your OTP Code</h2>
+                <p>Your OTP is: <strong>${otp}</strong></p>
+                <p>This code expires in 10 minutes.</p>
+            </div>
+        `,
     };
 
     try {
-        await apiInstance.sendTransacEmail(sendSmtpEmail);
-        console.log(`OTP email sent to ${email}`);
+        const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
+        console.log(`OTP email sent to ${email}`, response);
     } catch (err) {
         console.error("Failed to send OTP:", err.response?.body || err);
         throw err;
