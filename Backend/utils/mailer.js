@@ -1,34 +1,51 @@
 import nodemailer from "nodemailer";
-import dotenv from "dotenv";
-dotenv.config({ override: true });
+
+const { GMAIL_USER, GMAIL_PASS } = process.env;
+
+if (!GMAIL_USER || !GMAIL_PASS) {
+    throw new Error(
+        "Environment variables GMAIL_USER and GMAIL_PASS must be set."
+    );
+}
 
 const transporter = nodemailer.createTransport({
-    host: process.env.MAILTRAP_HOST,
-    port: process.env.MAILTRAP_PORT,
+    service: "gmail",
     auth: {
-        user: process.env.MAILTRAP_USER,
-        pass: process.env.MAILTRAP_PASS,
+        user: GMAIL_USER,
+        pass: GMAIL_PASS,
     },
+    secure: true,
 });
 
 export async function sendOtpEmail(email, otp) {
     const mailOptions = {
-        from: process.env.MAILTRAP_FROM,
+        from: `"NoticeSphere Academic Portal" <${GMAIL_USER}>`,
         to: email,
-        subject: "NoticeSphere OTP Verification",
-        text: `Your OTP is: ${otp}`,
+        subject: "Your One-Time Password (OTP)",
+        text: `Hello,
+
+Your OTP code is: ${otp}
+
+This code is valid for 10 minutes. If you did not request this, please ignore this email.
+
+Thank you,
+NoticeSphere Team`,
         html: `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-          <h2 style="color: #0056b3;">NoticeSphere OTP Verification</h2>
-          <p>Your one-time password (OTP) is: <strong>${otp}</strong></p>
-          <p>This OTP is valid for the next 10 minutes. Do not share it with anyone.</p>
-      </div>
-    `,
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <h2 style="color: #0056b3;">NoticeSphere OTP Verification</h2>
+            <p>Hello,</p>
+            <p>Your one-time password (OTP) is: <strong>${otp}</strong></p>
+            <p>This OTP is valid for the next 10 minutes. Please do not share it with anyone.</p>
+            <p>If you did not request this OTP, kindly ignore this email.</p>
+            <br/>
+            <p style="font-size: 0.9em; color: #555;">NoticeSphere Academic Portal</p>
+        </div>
+        `,
     };
 
     try {
-        const info = await transporter.sendMail(mailOptions);
-        console.log(`OTP email sent to ${email}:`, info.messageId);
+        await transporter.sendMail(mailOptions);
+        console.log(`OTP email successfully sent to ${email}`);
     } catch (error) {
         console.error("Failed to send OTP email:", error);
         throw new Error("Unable to send OTP email. Please try again later.");
